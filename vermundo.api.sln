@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vermundo.api", "vermundo.api\vermundo.api.csproj", "{E4A58850-F758-4E85-820E-F14ED41B712B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vermundo.Api", "vermundo.api\Vermundo.Api.csproj", "{E4A58850-F758-4E85-820E-F14ED41B712B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
