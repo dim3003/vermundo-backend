@@ -10,4 +10,8 @@
     <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Vermundo.Domain\Vermundo.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
