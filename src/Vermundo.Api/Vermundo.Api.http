@@ -1,0 +1,6 @@
+@Vermundo.Api_HostAddress = http://localhost:5277
+
+GET {{Vermundo.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
