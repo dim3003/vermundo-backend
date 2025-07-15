@@ -3,5 +3,5 @@ namespace Vermundo.Domain.Articles;
 
 public interface IArticleRepository
 {
-    int AddAsync(Article article);
+    Task<Guid> AddAsync(Article article);
 }

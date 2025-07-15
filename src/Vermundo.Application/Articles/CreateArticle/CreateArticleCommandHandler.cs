@@ -22,7 +22,7 @@ internal sealed class CreateArticleCommandHandler : ICommandHandler<CreateArticl
         CancellationToken cancellationToken)
     {
         var article = new Article(request.Title, request.Body);
-        _articleRepository.AddAsync(article);
+        await _articleRepository.AddAsync(article);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }

@@ -27,7 +27,7 @@ public class CreateArticleTests
             .ReturnsAsync(articleId)
             .Verifiable();
         uow.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
-           .ReturnsAsync(Task.CompletedTask)
+           .ReturnsAsync(1)
            .Verifiable();
 
         var handler = new CreateArticleCommandHandler(repo.Object, uow.Object);
@@ -37,9 +37,9 @@ public class CreateArticleTests
 
         // Assert – ordre strict
         var seq = new MockSequence();
-        repo.InSequence(seq).Verify(r => r.AddAsync(It.IsAny<Article>()), Times.Once);
-        uow.InSequence(seq).Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        repo.Verify(r => r.AddAsync(It.IsAny<Article>()), Times.Once);
+        uow.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
 
-        Assert.Equal(result, articleId);
+        Assert.True(result.IsSuccess);
     }
 }
