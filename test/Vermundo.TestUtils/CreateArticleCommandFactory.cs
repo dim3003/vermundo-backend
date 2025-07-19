@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using Vermundo.Application.Articles;
 
-namespace Vermundo.Application.UnitTests.CreateArticle;
+namespace Vermundo.TestUtils;
 
 public class CreateArticleCommandFactory
 {
@@ -15,4 +15,3 @@ public class CreateArticleCommandFactory
         );
     }
 }
-

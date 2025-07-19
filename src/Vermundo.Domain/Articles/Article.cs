@@ -1,7 +1,11 @@
+using Vermundo.Domain.Abstractions;
+
 namespace Vermundo.Domain.Articles;
 
-public class Article
+public class Article : Entity
 {
+    private Article() { }
+
     public Article(string title, string body)
     {
         Id = Guid.NewGuid();

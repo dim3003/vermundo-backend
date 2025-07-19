@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vermundo.Domain\Vermundo.Domain.csproj" />
+    <ProjectReference Include="..\Vermundo.Application\Vermundo.Application.csproj" />
+    <ProjectReference Include="..\Vermundo.Infrastructure\Vermundo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,5 @@
-﻿
+﻿using Vermundo.Domain.Abstractions;
+
 namespace Vermundo.Domain.Articles;
 
-public interface IArticleRepository
-{
-    Task<Guid> AddAsync(Article article);
-}
+public interface IArticleRepository : IRepository<Article> { }

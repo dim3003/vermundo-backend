@@ -6,14 +6,11 @@ namespace Vermundo.Application.Articles;
 
 internal sealed class CreateArticleCommandHandler : ICommandHandler<CreateArticleCommand>
 {
-    private readonly IArticleRepository _articleRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public CreateArticleCommandHandler(
-        IArticleRepository articleRepository,
         IUnitOfWork unitOfWork)
     {
-        _articleRepository = articleRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -22,7 +19,7 @@ internal sealed class CreateArticleCommandHandler : ICommandHandler<CreateArticl
         CancellationToken cancellationToken)
     {
         var article = new Article(request.Title, request.Body);
-        await _articleRepository.AddAsync(article);
+        await _unitOfWork.Article.AddAsync(article);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }

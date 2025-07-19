@@ -33,6 +33,7 @@
     <ProjectReference Include="..\..\src\Vermundo.Application\Vermundo.Application.csproj" />
     <ProjectReference Include="..\..\src\Vermundo.Infrastructure\Vermundo.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Vermundo.Api\Vermundo.Api.csproj" />
+    <ProjectReference Include="..\Vermundo.TestUtils\Vermundo.TestUtils.csproj" />
   </ItemGroup>
 
 </Project>
