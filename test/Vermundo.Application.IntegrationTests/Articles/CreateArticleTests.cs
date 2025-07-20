@@ -1,7 +1,6 @@
 using Vermundo.Application.IntegrationTests.Infrastructure;
 using Vermundo.Application.Articles;
 using Vermundo.TestUtils;
-using Vermundo.Domain.Abstractions;
 
 namespace Vermundo.Application.IntegrationTests.Articles;
 
@@ -23,6 +22,6 @@ public class CreateArticleTests : BaseIntegrationTest
         var result = await Sender.Send(_command);
 
         // Assert
-        Assert.Equal(Result.Success(), result);
+        Assert.True(result.IsSuccess);
     }
 }

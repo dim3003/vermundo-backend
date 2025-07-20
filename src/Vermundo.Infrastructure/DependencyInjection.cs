@@ -15,8 +15,6 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-
-
         var connectionString =
                     configuration.GetConnectionString("Database") ??
                     throw new ArgumentNullException(nameof(configuration));
