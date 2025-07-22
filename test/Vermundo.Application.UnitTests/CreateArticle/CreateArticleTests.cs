@@ -6,7 +6,7 @@ using Vermundo.TestUtils;
 
 namespace Vermundo.Application.UnitTests.CreateArticle;
 
-public class CreateArticleTests
+public class CreateArticleTests : CreateArticleCommandValidatorTests
 {
     private readonly CreateArticleCommand _command;
 
