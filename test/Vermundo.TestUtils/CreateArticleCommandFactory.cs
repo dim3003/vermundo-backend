@@ -14,4 +14,14 @@ public class CreateArticleCommandFactory
             _faker.Lorem.Paragraphs(2)
         );
     }
+    public CreateArticleCommand Create(
+            string title,
+            string body
+        )
+    {
+        return new CreateArticleCommand(
+            title,
+            body
+        );
+    }
 }
