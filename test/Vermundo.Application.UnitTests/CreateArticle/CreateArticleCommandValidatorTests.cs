@@ -1,6 +1,6 @@
-﻿using Vermundo.Application.Articles;
+﻿using Bogus;
+using Vermundo.Application.Articles;
 using Vermundo.TestUtils;
-using Bogus;
 
 namespace Vermundo.Application.UnitTests.CreateArticle;
 
@@ -10,13 +10,13 @@ public class CreateArticleCommandValidatorTests
     private readonly CreateArticleCommandFactory _factory = new();
     private readonly Faker _faker = new();
 
+    private const int MaxImageUrlLength = 512;
+
     [Fact]
     public async Task Validate_ValidCommand_ReturnsSuccess()
     {
         // Arrange
-        var command = _factory.Create(
-            _faker.Lorem.Sentence(3),
-            _faker.Lorem.Paragraphs(3));
+        var command = _factory.Create(_faker.Lorem.Sentence(3), _faker.Lorem.Paragraphs(3));
 
         // Act
         var result = await _validator.ValidateAsync(command);
@@ -99,11 +99,72 @@ public class CreateArticleCommandValidatorTests
     public async Task Validate_ContainsScriptTag_ReturnsFailure()
     {
         var scriptBody = "<script>alert('XSS');</script>" + _faker.Lorem.Paragraph();
-        var command = _factory.Create(
-            _faker.Lorem.Sentence(),
-            scriptBody);
+        var command = _factory.Create(_faker.Lorem.Sentence(), scriptBody);
         var result = await _validator.ValidateAsync(command);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == "Body");
+    }
+
+    [Fact]
+    public async Task Validate_TooLongImageUrl_ReturnsFailure()
+    {
+        var longImageUrl = _faker.Random.String2(MaxImageUrlLength + 1);
+        var command = _factory.Create(
+            _faker.Lorem.Sentence(),
+            _faker.Lorem.Paragraph(),
+            longImageUrl
+        );
+
+        var result = await _validator.ValidateAsync(command);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(
+            result.Errors,
+            e =>
+                e.PropertyName == "ImageUrl"
+                && e.ErrorMessage.Contains("characters", StringComparison.OrdinalIgnoreCase)
+        );
+    }
+
+    [Fact]
+    public async Task Validate_ImageUrlIsNotUrl_ReturnsFailure()
+    {
+        var invalidUrl = _faker.Random.String2(50);
+        var command = _factory.Create(
+            _faker.Lorem.Sentence(),
+            _faker.Lorem.Paragraph(),
+            invalidUrl
+        );
+
+        var result = await _validator.ValidateAsync(command);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(
+            result.Errors,
+            e =>
+                e.PropertyName == "ImageUrl"
+                && e.ErrorMessage.Contains("valid URL", StringComparison.OrdinalIgnoreCase)
+        );
+    }
+
+    [Fact]
+    public async Task Validate_ImageUrlIsValid_ReturnsSuccess()
+    {
+        var validUrl = _faker.Internet.Url();
+        var command = _factory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(), validUrl);
+
+        var result = await _validator.ValidateAsync(command);
+
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public async Task Validate_ImageUrlIsNull_ReturnsSuccess()
+    {
+        var command = _factory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(), null);
+
+        var result = await _validator.ValidateAsync(command);
+
+        Assert.True(result.IsValid);
     }
 }

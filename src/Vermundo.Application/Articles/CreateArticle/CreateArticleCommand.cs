@@ -2,4 +2,5 @@
 
 namespace Vermundo.Application.Articles;
 
-public sealed record CreateArticleCommand(string Title, string Body) : ICommand<Guid>;
+public sealed record CreateArticleCommand(string Title, string Body, string? ImageUrl = null)
+    : ICommand<Guid>;
