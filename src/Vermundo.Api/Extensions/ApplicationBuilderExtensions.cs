@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Vermundo.Api.Middleware;
 using Vermundo.Infrastructure;
 
 namespace Vermundo.Api.Extensions;
@@ -12,5 +13,10 @@ public static class ApplicationBuilderExtensions
         using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         dbContext.Database.Migrate();
+    }
+
+    public static void UseCustomExceptionHandler(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
     }
 }

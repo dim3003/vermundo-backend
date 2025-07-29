@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Json;
 using Vermundo.Api.Controllers.Articles;
@@ -26,6 +27,54 @@ public class CreateArticleTests : BaseFunctionalTests
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.True(response.Headers.Location != null, "Location header is missing");
 
+        var location = response.Headers.Location.ToString();
+        Assert.Matches(@"\/articles\/[a-f0-9\-]+$", location);
+    }
+
+    [Fact]
+    public async Task CreateArticle_ShouldReturnIsSuccess_WhenImageUrlIsValid()
+    {
+        var request = new CreateArticleRequest(
+            _faker.Lorem.Sentence(),
+            _faker.Lorem.Paragraph(),
+            "https://example.com/image.jpg"
+        );
+
+        var response = await HttpClient.PostAsJsonAsync("api/articles", request);
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.True(response.Headers.Location != null, "Location header is missing");
+        var location = response.Headers.Location.ToString();
+        Assert.Matches(@"\/articles\/[a-f0-9\-]+$", location);
+    }
+
+    [Fact]
+    public async Task CreateArticle_ShouldReturnBadRequest_WhenImageUrlIsInvalid()
+    {
+        var request = new CreateArticleRequest(
+            _faker.Lorem.Sentence(),
+            _faker.Lorem.Paragraph(),
+            "not-a-valid-url"
+        );
+
+        var response = await HttpClient.PostAsJsonAsync("api/articles", request);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateArticle_ShouldReturnIsSuccess_WhenImageUrlIsNull()
+    {
+        var request = new CreateArticleRequest(
+            _faker.Lorem.Sentence(),
+            _faker.Lorem.Paragraph(),
+            null
+        );
+
+        var response = await HttpClient.PostAsJsonAsync("api/articles", request);
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.True(response.Headers.Location != null, "Location header is missing");
         var location = response.Headers.Location.ToString();
         Assert.Matches(@"\/articles\/[a-f0-9\-]+$", location);
     }

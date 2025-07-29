@@ -2,5 +2,6 @@
 
 public record CreateArticleRequest(
     string Title,
-    string Body
+    string Body,
+    string? ImageUrl = null
 );

@@ -22,6 +22,7 @@ if (app.Environment.IsDevelopment())
 
 // Middleware
 app.UseHttpsRedirection();
+app.UseCustomExceptionHandler();
 
 // Endpoints
 var routeGroupBuilder = app.MapGroup("api/");

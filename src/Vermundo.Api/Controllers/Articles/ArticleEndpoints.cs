@@ -10,7 +10,7 @@ public static class ArticleEndpoints
         builder.MapGet("articles/{id:guid}", GetArticle).WithName(nameof(GetArticle));
 
         builder.MapPost("articles", AddArticle);
-        
+
         return builder;
     }
 
@@ -28,7 +28,7 @@ public static class ArticleEndpoints
         CancellationToken cancellationToken = default
     )
     {
-        var command = new CreateArticleCommand(request.Title, request.Body);
+        var command = new CreateArticleCommand(request.Title, request.Body, request.ImageUrl);
 
         var result = await sender.Send(command, cancellationToken);
 

@@ -34,4 +34,36 @@ public class CreateArticleTests : BaseIntegrationTest
 
         Assert.Contains(ex.Errors, e => e.PropertyName == "Body");
     }
+
+    [Fact]
+    public async Task CreateArticle_ShouldReturnResultSuccess_WhenImageUrlIsValid()
+    {
+        var validImageUrl = "https://example.com/image.jpg";
+        var command = _commandFactory.Create(_faker.Lorem.Sentence(3), _faker.Lorem.Paragraph(), validImageUrl);
+
+        var result = await Sender.Send(command);
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public async Task CreateArticle_ShouldReturnResultValidationFailure_WhenImageUrlIsInvalid()
+    {
+        var invalidImageUrl = "not-a-valid-url";
+        var command = _commandFactory.Create(_faker.Lorem.Sentence(3), _faker.Lorem.Paragraph(), invalidImageUrl);
+
+        var ex = await Assert.ThrowsAsync<AppValidationException>(() => Sender.Send(command));
+
+        Assert.Contains(ex.Errors, e => e.PropertyName == "ImageUrl");
+    }
+
+    [Fact]
+    public async Task CreateArticle_ShouldReturnResultSuccess_WhenImageUrlIsNull()
+    {
+        var command = _commandFactory.Create(_faker.Lorem.Sentence(3), _faker.Lorem.Paragraph(), null);
+
+        var result = await Sender.Send(command);
+
+        Assert.True(result.IsSuccess);
+    }
 }
