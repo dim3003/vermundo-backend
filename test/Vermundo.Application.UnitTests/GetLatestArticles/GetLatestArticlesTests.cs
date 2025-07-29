@@ -29,8 +29,8 @@ public class GetLatestArticlesTests
         var result = await handler.Handle(new GetLatestArticlesQuery(), CancellationToken.None);
 
         // Assert
-        Assert.Equal(3, result.Count);
-        foreach (var dto in result)
+        Assert.Equal(3, result.Value.Count);
+        foreach (var dto in result.Value)
         {
             Assert.False(string.IsNullOrWhiteSpace(dto.Title));
             Assert.False(string.IsNullOrWhiteSpace(dto.ImageUrl));
@@ -56,7 +56,7 @@ public class GetLatestArticlesTests
         var result = await handler.Handle(new GetLatestArticlesQuery(), CancellationToken.None);
 
         // Assert
-        var preview = result.Single().BodyPreview;
+        var preview = result.Value.Single().BodyPreview;
         var previewWords = preview.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         Assert.Equal(50, previewWords.Length);
         Assert.Equal("word1", previewWords[0]);

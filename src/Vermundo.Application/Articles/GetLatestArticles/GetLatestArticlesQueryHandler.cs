@@ -1,9 +1,11 @@
-﻿using Vermundo.Domain.Articles;
+﻿using Vermundo.Application.Abstractions.Messaging;
+using Vermundo.Domain.Abstractions;
+using Vermundo.Domain.Articles;
 
 namespace Vermundo.Application.Articles;
 
-
-public class GetLatestArticlesQueryHandler
+internal sealed class GetLatestArticlesQueryHandler
+    : IQueryHandler<GetLatestArticlesQuery, List<LatestArticleDto>>
 {
     private readonly IArticleRepository _articleRepository;
 
@@ -12,11 +14,12 @@ public class GetLatestArticlesQueryHandler
         _articleRepository = articleRepository;
     }
 
-    public async Task<List<LatestArticleDto>> Handle(
+    public async Task<Result<List<LatestArticleDto>>> Handle(
         GetLatestArticlesQuery request,
         CancellationToken cancellationToken)
     {
         var articles = await _articleRepository.GetLatestAsync(3);
-        return articles.ConvertAll(LatestArticleDtoMapper.ToLatestArticleDto);
+        var dtos = articles.ConvertAll(LatestArticleDtoMapper.ToLatestArticleDto);
+        return Result.Success(dtos);
     }
 }

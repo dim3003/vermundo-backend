@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Vermundo.Application.IntegrationTests.Infrastructure;
 
-public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
+public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>, IAsyncLifetime
 {
     private readonly IServiceScope _scope;
     protected readonly ISender Sender;
@@ -16,5 +16,16 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
 
         Sender = _scope.ServiceProvider.GetRequiredService<ISender>();
         DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    }
+
+    public virtual async Task InitializeAsync()
+    {
+        DbContext.Articles.RemoveRange(DbContext.Articles);
+        await DbContext.SaveChangesAsync();
+    }
+
+    public virtual Task DisposeAsync()
+    {
+        return Task.CompletedTask;
     }
 }
