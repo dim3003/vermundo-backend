@@ -52,6 +52,10 @@ public class GetLatestArticlesTests : BaseFunctionalTests
 
         // Act
         var getResponse = await HttpClient.GetAsync("api/articles/latest");
+        var responseBody = await getResponse.Content.ReadAsStringAsync();
+        Console.WriteLine("RAW RESPONSE:");
+        Console.WriteLine(responseBody);
+
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);

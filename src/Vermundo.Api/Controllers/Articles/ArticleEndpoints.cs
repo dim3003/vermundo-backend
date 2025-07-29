@@ -8,6 +8,7 @@ public static class ArticleEndpoints
     public static IEndpointRouteBuilder MapArticleEndpoints(this IEndpointRouteBuilder builder)
     {
         builder.MapGet("articles/{id:guid}", GetArticle).WithName(nameof(GetArticle));
+        builder.MapGet("articles/latest", GetLatestArticles).WithName(nameof(GetLatestArticles));
 
         builder.MapPost("articles", AddArticle);
 
@@ -20,6 +21,17 @@ public static class ArticleEndpoints
     )
     {
         throw new NotImplementedException();
+    }
+
+    public static async Task<IResult> GetLatestArticles(
+            ISender sender, 
+            CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetLatestArticlesQuery(), cancellationToken);
+
+        return result.IsSuccess 
+            ? Results.Ok(result.Value)
+            : Results.NotFound();
     }
 
     public static async Task<IResult> AddArticle(

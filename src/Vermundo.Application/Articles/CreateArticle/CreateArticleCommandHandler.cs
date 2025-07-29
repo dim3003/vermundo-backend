@@ -18,7 +18,7 @@ internal sealed class CreateArticleCommandHandler : ICommandHandler<CreateArticl
         CancellationToken cancellationToken
     )
     {
-        var article = new Article(request.Title, request.Body);
+        var article = new Article(request.Title, request.Body, request.ImageUrl);
         await _unitOfWork.Article.AddAsync(article);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return article.Id;

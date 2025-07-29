@@ -77,4 +77,30 @@ public class CreateArticleTests : BaseFunctionalTests
         var location = response.Headers.Location.ToString();
         Assert.Matches(@"\/articles\/[a-f0-9\-]+$", location);
     }
+    
+    // Uncomment this once the GetArticle endpoint is done
+    /*[Fact]
+    public async Task CreateArticle_ShouldPersistImageUrl()
+    {
+        var expectedImageUrl = "https://cdn.example.com/my-image.png";
+        var request = new CreateArticleRequest(
+            _faker.Lorem.Sentence(),
+            _faker.Lorem.Paragraph(),
+            expectedImageUrl
+        );
+
+        var postResponse = await HttpClient.PostAsJsonAsync("api/articles", request);
+
+        Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+        Assert.NotNull(postResponse.Headers.Location);
+
+        // Follow the Location header to get the article
+        var getResponse = await HttpClient.GetAsync(postResponse.Headers.Location);
+        getResponse.EnsureSuccessStatusCode();
+
+        var article = await getResponse.Content.ReadFromJsonAsync<LatestArticleDto>();
+        Assert.NotNull(article);
+        Assert.Equal(expectedImageUrl, article.ImageUrl);
+    }*/
 }
+
