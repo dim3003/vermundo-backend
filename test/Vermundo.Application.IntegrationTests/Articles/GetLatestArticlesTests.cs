@@ -1,7 +1,7 @@
-﻿using Vermundo.Application.Articles;
+﻿using Bogus;
+using Vermundo.Application.Articles;
 using Vermundo.Application.IntegrationTests.Infrastructure;
 using Vermundo.TestUtils;
-using Bogus;
 
 namespace Vermundo.Application.IntegrationTests.Articles;
 

@@ -11,7 +11,7 @@ internal sealed class ArticleRepository : Repository<Article>, IArticleRepositor
     public async Task<List<Article>> GetLatestAsync(int count)
     {
         return await DbContext.Set<Article>()
-            .OrderByDescending(a => a.CreatedAt) 
+            .OrderByDescending(a => a.CreatedAt)
             .Take(count)
             .ToListAsync();
     }

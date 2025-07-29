@@ -1,6 +1,6 @@
-﻿using Vermundo.Application.Exceptions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Vermundo.Application.Exceptions;
 
 namespace Vermundo.Api.Middleware;
 

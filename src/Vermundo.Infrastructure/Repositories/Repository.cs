@@ -1,5 +1,5 @@
-using Vermundo.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Vermundo.Domain.Abstractions;
 
 namespace Vermundo.Infrastructure.Repositories;
 

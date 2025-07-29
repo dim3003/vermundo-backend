@@ -1,8 +1,8 @@
-using Vermundo.Application.Abstractions.Messaging;
-using Vermundo.ArchitectureTests.Infrastructure;
 using FluentAssertions;
 using FluentValidation;
 using NetArchTest.Rules;
+using Vermundo.Application.Abstractions.Messaging;
+using Vermundo.ArchitectureTests.Infrastructure;
 
 namespace Bookify.ArchitectureTests.Application;
 

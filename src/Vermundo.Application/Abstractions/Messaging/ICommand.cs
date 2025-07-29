@@ -1,5 +1,5 @@
-using Vermundo.Domain.Abstractions;
 using MediatR;
+using Vermundo.Domain.Abstractions;
 
 namespace Vermundo.Application.Abstractions.Messaging;
 

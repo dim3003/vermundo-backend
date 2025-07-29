@@ -1,7 +1,7 @@
-﻿using Vermundo.Application.Abstractions.Messaging;
-using Vermundo.Application.Exceptions;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
+using Vermundo.Application.Abstractions.Messaging;
+using Vermundo.Application.Exceptions;
 
 namespace Vermundo.Application.Abstractions.Behaviors;
 

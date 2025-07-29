@@ -1,6 +1,6 @@
-using Vermundo.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Vermundo.Infrastructure;
 
 namespace Vermundo.Application.IntegrationTests.Infrastructure;
 

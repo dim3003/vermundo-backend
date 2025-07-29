@@ -1,6 +1,6 @@
-using Vermundo.Application.Abstractions.Data;
 using Npgsql;
 using System.Data;
+using Vermundo.Application.Abstractions.Data;
 
 namespace Vermundo.Infrastructure.Data;
 

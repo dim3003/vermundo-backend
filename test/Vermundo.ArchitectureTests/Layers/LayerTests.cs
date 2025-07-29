@@ -1,6 +1,6 @@
-using Vermundo.ArchitectureTests.Infrastructure;
 using FluentAssertions;
 using NetArchTest.Rules;
+using Vermundo.ArchitectureTests.Infrastructure;
 
 namespace Vermundo.ArchitectureTests.Layers;
 

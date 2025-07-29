@@ -1,8 +1,8 @@
+using FluentAssertions;
+using NetArchTest.Rules;
 using System.Reflection;
 using Vermundo.ArchitectureTests.Infrastructure;
 using Vermundo.Domain.Abstractions;
-using FluentAssertions;
-using NetArchTest.Rules;
 
 namespace Vermundo.ArchitectureTests.Domain;
 

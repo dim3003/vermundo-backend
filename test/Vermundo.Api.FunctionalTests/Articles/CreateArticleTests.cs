@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Json;
 using Vermundo.Api.Controllers.Articles;

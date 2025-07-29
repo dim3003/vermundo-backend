@@ -1,7 +1,7 @@
-using AppValidationException = Vermundo.Application.Exceptions.ValidationException;
+using Bogus;
 using Vermundo.Application.IntegrationTests.Infrastructure;
 using Vermundo.TestUtils;
-using Bogus;
+using AppValidationException = Vermundo.Application.Exceptions.ValidationException;
 
 namespace Vermundo.Application.IntegrationTests.Articles;
 

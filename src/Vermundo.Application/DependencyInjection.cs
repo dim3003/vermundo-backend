@@ -1,6 +1,6 @@
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Vermundo.Application.Abstractions.Behaviors;
-using FluentValidation;
 
 namespace Vermundo.Application;
 
