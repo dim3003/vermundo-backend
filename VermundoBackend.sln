@@ -27,6 +27,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vermundo.Domain.UnitTests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vermundo.TestUtils", "test\Vermundo.TestUtils\Vermundo.TestUtils.csproj", "{B8DD2951-DCFF-42FF-B206-9AFA69134790}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -172,5 +177,8 @@ Global
 		{BBEA4F4F-F605-49CE-8016-E2CBB73C286F} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
 		{E3E3E5D8-1F3E-4B9E-AF31-9982859F3DEB} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
 		{B8DD2951-DCFF-42FF-B206-9AFA69134790} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCCDADAC-D599-473F-84F1-51DBDD6CBF89}
 	EndGlobalSection
 EndGlobal
