@@ -161,7 +161,7 @@ public class CreateArticleCommandValidatorTests
     [Fact]
     public async Task Validate_ImageUrlIsNull_ReturnsSuccess()
     {
-        var command = _factory.Create(NewFaker().Lorem.Sentence(), NewFaker().Lorem.Paragraph(), null);
+        var command = _factory.Create(NewFaker().Lorem.Sentence(), NewFaker().Lorem.Paragraph(3), null);
 
         var result = await _validator.ValidateAsync(command);
 

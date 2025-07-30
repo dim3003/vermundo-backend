@@ -31,10 +31,10 @@ public class GetLatestArticlesTests : BaseIntegrationTest, IAsyncLifetime
         // Arrange: create 4 articles with different creation times
         var articles = new List<CreateArticleCommand>
         {
-            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(), "https://img1.jpg"),
-            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(), "https://img2.jpg"),
-            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(), "https://img3.jpg"),
-            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(), "https://img4.jpg"),
+            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3), "https://img1.jpg"),
+            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3), "https://img2.jpg"),
+            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3), "https://img3.jpg"),
+            _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3), "https://img4.jpg"),
         };
 
         foreach (var command in articles)
