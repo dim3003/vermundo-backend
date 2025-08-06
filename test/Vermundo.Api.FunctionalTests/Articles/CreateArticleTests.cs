@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Vermundo.Api.Controllers.Articles;
 using Vermundo.Api.FunctionalTests.Infrastructure;
+using Vermundo.Application.Articles;
 
 namespace Vermundo.Api.FunctionalTests.Articles;
 
@@ -17,7 +18,7 @@ public class CreateArticleTests : BaseFunctionalTests
     [Fact]
     public async Task CreateArticle_ShouldReturnIsSuccess_WhenValid()
     {
-        var request = new CreateArticleRequest(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph());
+        var request = new CreateArticleRequest(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3));
 
         var response = await HttpClient.PostAsJsonAsync("api/articles",
             request
@@ -35,7 +36,7 @@ public class CreateArticleTests : BaseFunctionalTests
     {
         var request = new CreateArticleRequest(
             _faker.Lorem.Sentence(),
-            _faker.Lorem.Paragraph(),
+            _faker.Lorem.Paragraph(3),
             "https://example.com/image.jpg"
         );
 
@@ -52,7 +53,7 @@ public class CreateArticleTests : BaseFunctionalTests
     {
         var request = new CreateArticleRequest(
             _faker.Lorem.Sentence(),
-            _faker.Lorem.Paragraph(),
+            _faker.Lorem.Paragraph(3),
             "not-a-valid-url"
         );
 
@@ -66,7 +67,7 @@ public class CreateArticleTests : BaseFunctionalTests
     {
         var request = new CreateArticleRequest(
             _faker.Lorem.Sentence(),
-            _faker.Lorem.Paragraph(),
+            _faker.Lorem.Paragraph(3),
             null
         );
 
@@ -77,15 +78,14 @@ public class CreateArticleTests : BaseFunctionalTests
         var location = response.Headers.Location.ToString();
         Assert.Matches(@"\/articles\/[a-f0-9\-]+$", location);
     }
-    
-    // Uncomment this once the GetArticle endpoint is done
-    /*[Fact]
+
+    [Fact]
     public async Task CreateArticle_ShouldPersistImageUrl()
     {
-        var expectedImageUrl = "https://cdn.example.com/my-image.png";
+        var expectedImageUrl = _faker.Image.PicsumUrl();
         var request = new CreateArticleRequest(
             _faker.Lorem.Sentence(),
-            _faker.Lorem.Paragraph(),
+            _faker.Lorem.Paragraph(3),
             expectedImageUrl
         );
 
@@ -94,13 +94,12 @@ public class CreateArticleTests : BaseFunctionalTests
         Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
         Assert.NotNull(postResponse.Headers.Location);
 
-        // Follow the Location header to get the article
         var getResponse = await HttpClient.GetAsync(postResponse.Headers.Location);
         getResponse.EnsureSuccessStatusCode();
 
-        var article = await getResponse.Content.ReadFromJsonAsync<LatestArticleDto>();
+        var article = await getResponse.Content.ReadFromJsonAsync<ArticleDto>();
         Assert.NotNull(article);
         Assert.Equal(expectedImageUrl, article.ImageUrl);
-    }*/
+    }
 }
 

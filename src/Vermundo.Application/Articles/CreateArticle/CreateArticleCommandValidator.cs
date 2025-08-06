@@ -4,9 +4,9 @@ namespace Vermundo.Application.Articles;
 
 internal sealed class CreateArticleCommandValidator : AbstractValidator<CreateArticleCommand>
 {
-    private const int TitleMinLength = 5;
+    private const int TitleMinLength = 3;
     private const int TitleMaxLength = 100;
-    private const int BodyMinLength = 100;
+    private const int BodyMinLength = 50;
     private const int BodyMaxLength = 10000;
     private const int ImageUrlMaxLength = 512;
 

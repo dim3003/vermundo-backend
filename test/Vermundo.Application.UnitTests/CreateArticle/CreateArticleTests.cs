@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Bogus;
+using Moq;
 using Vermundo.Application.Articles;
 using Vermundo.Domain.Abstractions;
 using Vermundo.Domain.Articles;
@@ -9,11 +10,12 @@ namespace Vermundo.Application.UnitTests.CreateArticle;
 public class CreateArticleTests : CreateArticleCommandValidatorTests
 {
     private readonly CreateArticleCommand _command;
+    private readonly Faker _faker = new Faker();
 
     public CreateArticleTests()
     {
         var factory = new CreateArticleCommandFactory();
-        _command = factory.Create();
+        _command = factory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3), _faker.Image.PicsumUrl());
     }
 
     [Fact]

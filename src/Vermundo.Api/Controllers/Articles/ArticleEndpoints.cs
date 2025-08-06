@@ -17,10 +17,15 @@ public static class ArticleEndpoints
 
     public static async Task<IResult> GetArticle(
         Guid id,
+        ISender sender,
         CancellationToken cancellationToken = default
     )
     {
-        throw new NotImplementedException();
+        var query = new GetArticleQuery(id);
+        var result = await sender.Send(query, cancellationToken);
+        return result.IsSuccess 
+            ? Results.Ok(result.Value) 
+            : Results.NotFound(result.Error);
     }
 
     public static async Task<IResult> GetLatestArticles(

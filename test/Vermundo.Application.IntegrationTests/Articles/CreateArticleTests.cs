@@ -18,7 +18,7 @@ public class CreateArticleTests : BaseIntegrationTest
     [Fact]
     public async Task CreateArticle_ShouldReturnResultSuccess_WhenCommandIsValid()
     {
-        var command = _commandFactory.Create();
+        var command = _commandFactory.Create(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3), _faker.Image.PicsumUrl());
 
         var result = await Sender.Send(command);
 
