@@ -18,6 +18,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.ApplyMigrations();
+    await app.SeedData();
 }
 
 // Middleware
