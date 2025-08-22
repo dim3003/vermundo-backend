@@ -2,6 +2,7 @@
 
 public class LatestArticleDto
 {
+    public Guid Id { get; init; }
     public DateTime CreatedAt { get; init; }
     public string Title { get; init; } = string.Empty;
     public string BodyPreview { get; init; } = string.Empty;

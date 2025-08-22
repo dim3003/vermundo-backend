@@ -8,6 +8,7 @@ public class LatestArticleDtoMapper
     {
         return new LatestArticleDto
         {
+            Id = article.Id,
             Title = article.Title,
             ImageUrl = article.ImageUrl,
             CreatedAt = article.CreatedAt,
