@@ -31,10 +31,22 @@ public static class SeedDataExtensions
         var payloads = Enumerable.Range(0, 5).Select(i =>
         {
             var title = faker.Lorem.Sentence(5);
-            var body = faker.Lorem.Paragraphs(3, "\n\n");
+            var paragraph1= "## Subtitle\n\n" 
+                + faker.Lorem.Sentence(6);
+            var paragraph2= "## Subtitle\n\n" 
+                + faker.Lorem.Sentence(13) 
+                + "\n\n"
+                + faker.Lorem.Sentence(5)
+                + "\n\n";
+            var sources = @"## Source\n\n
+                - [Example source title — Example source author](https://example.com)";
+
+            var fullBody = paragraph1 + paragraph2 + sources;
+
             var image = faker.Image.PicsumUrl();
-            return new CreateArticleCommand(title + $" #{i + 1}", body, image);
+            return new CreateArticleCommand(title + $" #{i + 1}", fullBody, image);
         }).ToArray();
+
 
         foreach (var cmd in payloads)
         {
