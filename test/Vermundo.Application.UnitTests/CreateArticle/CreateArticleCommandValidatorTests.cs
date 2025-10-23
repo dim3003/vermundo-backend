@@ -74,7 +74,7 @@ public class CreateArticleCommandValidatorTests
     [Fact]
     public async Task Validate_TooLongBody_ReturnsFailure()
     {
-        var longBody = _faker.Random.String2(10_001);
+        var longBody = _faker.Random.String2(15001);
         var command = _factory.Create(_faker.Lorem.Sentence(), longBody);
 
         var result = await _validator.ValidateAsync(command);

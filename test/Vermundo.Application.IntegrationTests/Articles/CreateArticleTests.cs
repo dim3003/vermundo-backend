@@ -28,7 +28,7 @@ public class CreateArticleTests : BaseIntegrationTest
     [Fact]
     public async Task CreateArticle_ShouldReturnResultValidationFailure_WhenCommandIsInvalid()
     {
-        var command = _commandFactory.Create(_faker.Lorem.Sentence(1), _faker.Random.String2(10001));
+        var command = _commandFactory.Create(_faker.Lorem.Sentence(1), _faker.Random.String2(15001));
 
         var ex = await Assert.ThrowsAsync<AppValidationException>(() => Sender.Send(command));
 
