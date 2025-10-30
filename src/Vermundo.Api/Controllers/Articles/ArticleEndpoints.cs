@@ -12,6 +12,8 @@ public static class ArticleEndpoints
 
         builder.MapPost("articles", AddArticle);
 
+        builder.MapPut("articles/{id:guid}", UpdateArticle);
+
         builder.MapDelete("articles/{id:guid}", DeleteArticle).WithName(nameof(DeleteArticle));
 
         return builder;
@@ -57,6 +59,20 @@ public static class ArticleEndpoints
         }
 
         return Results.CreatedAtRoute(nameof(GetArticle), new { id = result.Value }, result.Value);
+    }
+
+    public static async Task<IResult> UpdateArticle(
+        Guid id,
+        UpdateArticleRequest request,
+        ISender sender,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var query = new UpdateArticleCommand(id, request.ImageUrl);
+        var result = await sender.Send(query, cancellationToken);
+        return result.IsSuccess 
+            ? Results.Ok(result.Value) 
+            : Results.NotFound(result.Error);
     }
 
     public static async Task<IResult> DeleteArticle(

@@ -27,6 +27,11 @@ internal abstract class Repository<T> : IRepository<T>
         await DbContext.Set<T>().AddAsync(entity);
     }
 
+    public void Update(T entity)
+    {
+        DbContext.Set<T>().Update(entity);
+    }
+
     public void Remove(T entity)
     {
         DbContext.Set<T>().Remove(entity);

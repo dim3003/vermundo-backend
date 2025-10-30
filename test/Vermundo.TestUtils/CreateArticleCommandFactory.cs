@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Vermundo.Application.Articles;
+﻿using Vermundo.Application.Articles;
 
 namespace Vermundo.TestUtils;
 

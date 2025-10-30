@@ -5,5 +5,6 @@ public interface IRepository<T>
 {
     Task AddAsync(T entity);
     Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    void Update(T entity);
     void Remove(T entity);
 }
