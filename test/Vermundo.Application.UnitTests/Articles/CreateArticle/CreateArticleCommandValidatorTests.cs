@@ -2,7 +2,7 @@
 using Vermundo.Application.Articles;
 using Vermundo.TestUtils;
 
-namespace Vermundo.Application.UnitTests.CreateArticle;
+namespace Vermundo.Application.UnitTests.Articles.CreateArticle;
 
 public class CreateArticleCommandValidatorTests
 {

@@ -1,7 +1,7 @@
 using Bogus;
 using Vermundo.Application.Articles;
 
-namespace Vermundo.Application.UnitTests.DeleteArticle;
+namespace Vermundo.Application.UnitTests.Articles.DeleteArticle;
 
 public class DeleteArticleCommandValidatorTests
 {

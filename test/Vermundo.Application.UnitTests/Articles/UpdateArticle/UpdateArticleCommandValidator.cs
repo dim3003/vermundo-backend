@@ -1,6 +1,6 @@
 using Bogus; 
 
-namespace Vermundo.Application.UnitTests.UpdateArticle;
+namespace Vermundo.Application.UnitTests.Articles.UpdateArticle;
 
 public class UpdateArticleCommandValidatorTests 
 {
