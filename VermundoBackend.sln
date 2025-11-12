@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vermundo.Infrastructure.UnitTests", "test\Vermundo.Infrastructure.UnitTests\Vermundo.Infrastructure.UnitTests.csproj", "{4655A541-593F-4685-897A-EB2E4A960D15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,6 +164,18 @@ Global
 		{B8DD2951-DCFF-42FF-B206-9AFA69134790}.Release|x64.Build.0 = Release|Any CPU
 		{B8DD2951-DCFF-42FF-B206-9AFA69134790}.Release|x86.ActiveCfg = Release|Any CPU
 		{B8DD2951-DCFF-42FF-B206-9AFA69134790}.Release|x86.Build.0 = Release|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Debug|x64.Build.0 = Debug|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Debug|x86.Build.0 = Debug|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Release|x64.ActiveCfg = Release|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Release|x64.Build.0 = Release|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Release|x86.ActiveCfg = Release|Any CPU
+		{4655A541-593F-4685-897A-EB2E4A960D15}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +191,7 @@ Global
 		{BBEA4F4F-F605-49CE-8016-E2CBB73C286F} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
 		{E3E3E5D8-1F3E-4B9E-AF31-9982859F3DEB} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
 		{B8DD2951-DCFF-42FF-B206-9AFA69134790} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
+		{4655A541-593F-4685-897A-EB2E4A960D15} = {0C88DD14-F956-CE84-757C-A364CCF449FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FCCDADAC-D599-473F-84F1-51DBDD6CBF89}
