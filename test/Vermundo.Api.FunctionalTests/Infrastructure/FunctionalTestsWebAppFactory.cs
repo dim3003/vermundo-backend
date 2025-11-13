@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
+using Vermundo.Api.FunctionalTests.Newsletter;
 using Vermundo.Application.Abstractions.Data;
 using Vermundo.Infrastructure;
 using Vermundo.Infrastructure.Data;
@@ -35,6 +36,10 @@ public class FunctionalTestsWebAppFactory : WebApplicationFactory<Program>, IAsy
 
             services.AddSingleton<ISqlConnectionFactory>(_ =>
                 new SqlConnectionFactory(_dbContainer.GetConnectionString()));
+
+            services.RemoveAll<INewsletterClient>();
+            services.AddSingleton<SpyNewsletterClient>();
+            services.AddSingleton<INewsletterClient>(sp => sp.GetRequiredService<SpyNewsletterClient>());
         });
     }
     public async Task InitializeAsync()

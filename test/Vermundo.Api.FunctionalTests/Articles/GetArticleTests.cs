@@ -101,7 +101,7 @@ public class GetArticleTests : BaseFunctionalTests
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var article = await response.Content.ReadFromJsonAsync<ArticleDto>();
-        Assert.Equal(Guid.Parse(articleId), article.Id);
+        Assert.Equal(Guid.Parse(articleId), article!.Id);
     }
 }
 

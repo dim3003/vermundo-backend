@@ -70,7 +70,7 @@ public class InfomaniakNewsletterClientTests
         var client = CreateClient(handler);
 
         // Act
-        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+        var ex = await Assert.ThrowsAsync<HttpRequestException>(
             () => client.SubscribeAsync("invalid-email"));
 
         // Assert
@@ -90,7 +90,7 @@ public class InfomaniakNewsletterClientTests
         var client = CreateClient(handler);
 
         // Act
-        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+        var ex = await Assert.ThrowsAsync<HttpRequestException>(
             () => client.SubscribeAsync("user@example.com"));
 
         // Assert

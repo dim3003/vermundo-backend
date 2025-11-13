@@ -40,6 +40,7 @@ app.UseCustomExceptionHandler();
 // Endpoints
 var routeGroupBuilder = app.MapGroup("api/");
 routeGroupBuilder.MapArticleEndpoints();
+routeGroupBuilder.MapNewsletterEndpoints();
 
 app.Run();
 

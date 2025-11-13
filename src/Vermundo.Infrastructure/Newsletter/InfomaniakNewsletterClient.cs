@@ -16,7 +16,8 @@ public class InfomaniakNewsletterClient : INewsletterClient
     public InfomaniakNewsletterClient(
         HttpClient httpClient,
         IOptions<InfomaniakNewsletterOptions> options,
-        ILogger<InfomaniakNewsletterClient> logger)
+        ILogger<InfomaniakNewsletterClient> logger
+    )
     {
         _httpClient = httpClient;
         _options = options.Value;
@@ -30,10 +31,7 @@ public class InfomaniakNewsletterClient : INewsletterClient
 
         var url = $"newsletters/{_options.Domain}/subscribers";
 
-        var payload = new
-        {
-            email
-        };
+        var payload = new { email };
 
         var json = JsonSerializer.Serialize(payload, JsonOptions);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -49,23 +47,45 @@ public class InfomaniakNewsletterClient : INewsletterClient
             "Infomaniak subscribe failed for {Email}. StatusCode: {StatusCode}, Body: {Body}",
             email,
             (int)response.StatusCode,
-            body);
+            body
+        );
 
         switch (response.StatusCode)
         {
             case HttpStatusCode.BadRequest:
-                throw new InvalidOperationException($"Infomaniak rejected the request: {body}");
+                throw new HttpRequestException(
+                    $"Infomaniak rejected the request: {body}",
+                    inner: null,
+                    statusCode: HttpStatusCode.BadRequest
+                );
 
             case HttpStatusCode.Unauthorized:
+                throw new HttpRequestException(
+                    "Infomaniak authentication failed. Check API token / permissions.",
+                    inner: null,
+                    statusCode: HttpStatusCode.Unauthorized
+                );
+
             case HttpStatusCode.Forbidden:
-                throw new InvalidOperationException("Infomaniak authentication failed. Check API token / permissions.");
+                throw new HttpRequestException(
+                    "Infomaniak authentication failed. Check API token / permissions.",
+                    inner: null,
+                    statusCode: HttpStatusCode.Forbidden
+                );
 
             case HttpStatusCode.TooManyRequests:
-                throw new InvalidOperationException("Infomaniak rate limit hit.");
+                throw new HttpRequestException(
+                    "Infomaniak rate limit hit.",
+                    inner: null,
+                    statusCode: HttpStatusCode.TooManyRequests
+                );
 
             default:
-                throw new InvalidOperationException(
-                    $"Infomaniak subscribe failed with status {(int)response.StatusCode}: {body}");
+                throw new HttpRequestException(
+                    $"Infomaniak subscribe failed with status {(int)response.StatusCode}: {body}",
+                    inner: null,
+                    statusCode: response.StatusCode
+                );
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Vermundo.Application.Exceptions;
 
 namespace Vermundo.Api.Middleware;
@@ -11,7 +11,8 @@ public class ExceptionHandlingMiddleware
 
     public ExceptionHandlingMiddleware(
         RequestDelegate next,
-        ILogger<ExceptionHandlingMiddleware> logger)
+        ILogger<ExceptionHandlingMiddleware> logger
+    )
     {
         _next = next;
         _logger = logger;
@@ -33,7 +34,7 @@ public class ExceptionHandlingMiddleware
                 Status = exceptionDetails.Status,
                 Type = exceptionDetails.Type,
                 Title = exceptionDetails.Title,
-                Detail = exceptionDetails.Detail
+                Detail = exceptionDetails.Detail,
             };
 
             if (exceptionDetails.Errors is not null)
@@ -49,27 +50,38 @@ public class ExceptionHandlingMiddleware
 
     private ExceptionDetails GetExceptionDetails(Exception exception)
     {
-
         return exception switch
         {
-            HttpRequestException httpEx when httpEx.StatusCode == HttpStatusCode.BadRequest => new ExceptionDetails(
-                StatusCodes.Status400BadRequest,
-                "HttpError",
-                "Bad Request",
-                httpEx.Message,
-                null),
+            HttpRequestException httpEx when httpEx.StatusCode == HttpStatusCode.TooManyRequests =>
+                new(
+                    StatusCodes.Status429TooManyRequests,
+                    "HttpError",
+                    "Rate limited",
+                    httpEx.Message,
+                    null
+                ),
+            HttpRequestException httpEx when httpEx.StatusCode == HttpStatusCode.BadRequest =>
+                new ExceptionDetails(
+                    StatusCodes.Status400BadRequest,
+                    "HttpError",
+                    "Bad Request",
+                    httpEx.Message,
+                    null
+                ),
             ValidationException validationException => new ExceptionDetails(
                 StatusCodes.Status400BadRequest,
                 "ValidationFailure",
                 "Validation error",
                 "One or more validation errors occurred.",
-                validationException.Errors),
+                validationException.Errors
+            ),
             _ => new ExceptionDetails(
                 StatusCodes.Status500InternalServerError,
                 "ServerError",
                 "Server error",
                 "An unexpected error occurred.",
-                null)
+                null
+            ),
         };
     }
 
@@ -78,5 +90,6 @@ public class ExceptionHandlingMiddleware
         string Type,
         string Title,
         string Detail,
-        IEnumerable<object>? Errors);
+        IEnumerable<object>? Errors
+    );
 }
