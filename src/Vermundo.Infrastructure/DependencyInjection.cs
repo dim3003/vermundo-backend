@@ -9,6 +9,8 @@ using Vermundo.Domain.Articles;
 using Vermundo.Infrastructure.Data;
 using Vermundo.Infrastructure.Newsletter;
 using Vermundo.Infrastructure.Repositories;
+using Vermundo.Infrastructure.Email;
+using Vermundo.Application.Email;
 
 namespace Vermundo.Infrastructure;
 
@@ -36,7 +38,17 @@ public static class DependencyInjection
 
         AddNewsletter(services, configuration);
 
+        AddSmtpEmail(services, configuration);
+
         return services;
+    }
+
+    private static void AddSmtpEmail(IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<SmtpOptions>(
+                        configuration.GetSection(SmtpOptions.SectionName));
+
+        services.AddScoped<IEmailSender, SmtpEmailSender>();
     }
 
     private static void AddNewsletter(IServiceCollection services, IConfiguration configuration)
