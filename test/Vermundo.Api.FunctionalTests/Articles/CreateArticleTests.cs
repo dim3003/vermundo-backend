@@ -1,6 +1,6 @@
-﻿using Bogus;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
+using Bogus;
 using Vermundo.Api.Controllers.Articles;
 using Vermundo.Api.FunctionalTests.Infrastructure;
 using Vermundo.Application.Articles;
@@ -11,18 +11,15 @@ public class CreateArticleTests : BaseFunctionalTests
 {
     private readonly Faker _faker = new();
 
-    public CreateArticleTests(FunctionalTestsWebAppFactory factory) : base(factory)
-    {
-    }
+    public CreateArticleTests(FunctionalTestsWebAppFactory factory)
+        : base(factory) { }
 
     [Fact]
     public async Task CreateArticle_ShouldReturnIsSuccess_WhenValid()
     {
         var request = new CreateArticleRequest(_faker.Lorem.Sentence(), _faker.Lorem.Paragraph(3));
 
-        var response = await HttpClient.PostAsJsonAsync("api/articles",
-            request
-        );
+        var response = await HttpClient.PostAsJsonAsync("api/articles", request);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.True(response.Headers.Location != null, "Location header is missing");
@@ -102,4 +99,3 @@ public class CreateArticleTests : BaseFunctionalTests
         Assert.Equal(expectedImageUrl, article.ImageUrl);
     }
 }
-
