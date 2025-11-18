@@ -27,7 +27,7 @@ public class ExceptionHandlingMiddleware
         catch (Exception exception)
         {
             _logger.LogError(exception, "Exception occurred: {Message}", exception.Message);
-            var exceptionDetails = GetExceptionDetails(exception);
+            var exceptionDetails = GetExceptionDetails(exception, context);
 
             var problemDetails = new ProblemDetails
             {
@@ -48,8 +48,10 @@ public class ExceptionHandlingMiddleware
         }
     }
 
-    private ExceptionDetails GetExceptionDetails(Exception exception)
+    private ExceptionDetails GetExceptionDetails(Exception exception, HttpContext context)
     {
+        var isDevelopment = context.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment();
+        
         return exception switch
         {
             HttpRequestException httpEx when httpEx.StatusCode == HttpStatusCode.TooManyRequests =>
@@ -79,7 +81,7 @@ public class ExceptionHandlingMiddleware
                 StatusCodes.Status500InternalServerError,
                 "ServerError",
                 "Server error",
-                "An unexpected error occurred.",
+                isDevelopment ? exception.Message : "An unexpected error occurred.",
                 null
             ),
         };

@@ -7,8 +7,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
 using Vermundo.Api.FunctionalTests.Newsletter;
 using Vermundo.Application.Abstractions.Data;
+using Vermundo.Application.Email;
 using Vermundo.Infrastructure;
 using Vermundo.Infrastructure.Data;
+using Vermundo.TestUtils;
 
 namespace Vermundo.Api.FunctionalTests.Infrastructure;
 
@@ -40,8 +42,22 @@ public class FunctionalTestsWebAppFactory : WebApplicationFactory<Program>, IAsy
             services.RemoveAll<INewsletterClient>();
             services.AddSingleton<SpyNewsletterClient>();
             services.AddSingleton<INewsletterClient>(sp => sp.GetRequiredService<SpyNewsletterClient>());
+            ReplaceEmailSender(services);
         });
     }
+
+    private static void ReplaceEmailSender(IServiceCollection services)
+    {
+        var descriptor = services.SingleOrDefault(x => x.ServiceType == typeof(IEmailSender));
+
+        if (descriptor is not null)
+        {
+            services.Remove(descriptor);
+        }
+
+        services.AddSingleton<IEmailSender, FakeEmailSender>();
+    }
+
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();

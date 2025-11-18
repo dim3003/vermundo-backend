@@ -1,3 +1,4 @@
+using Vermundo.Application.Abstractions;
 using Vermundo.Application.Abstractions.Messaging;
 using Vermundo.Domain.Abstractions;
 
@@ -5,17 +6,13 @@ namespace Vermundo.Application.Newsletter;
 
 internal sealed class SubscribeToNewsletterCommandHandler : ICommandHandler<SubscribeToNewsletterCommand>
 {
-    private readonly INewsletterClient _client;
+    private readonly INewsletterSubscriptionService _subscriptionService;
 
-    public SubscribeToNewsletterCommandHandler(INewsletterClient client)
+    public SubscribeToNewsletterCommandHandler(INewsletterSubscriptionService subscriptionService)
     {
-        _client = client;
+        _subscriptionService = subscriptionService;
     }
 
-    public async Task<Result> Handle(SubscribeToNewsletterCommand request, CancellationToken cancellationToken)
-    {
-        await _client.SubscribeAsync(request.Email, cancellationToken);
-        return Result.Success();
-    }
+    public Task<Result> Handle(SubscribeToNewsletterCommand request, CancellationToken cancellationToken)
+        => _subscriptionService.SubscribeAsync(request.Email, cancellationToken);
 }
-

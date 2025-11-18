@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Configuration;
-using Vermundo.Domain.Newsletters;
 
 namespace Vermundo.Application.Email;
 
@@ -47,10 +46,5 @@ public sealed class NewsletterEmailContentFactory : INewsletterEmailContentFacto
             HtmlBody: htmlBody,
             TextBody: textBody
         );
-    }
-
-    public NewsletterEmailMessage CreateConfirmationEmail(NewsletterSubscriber subscriber, string confirmationToken)
-    {
-        throw new NotImplementedException();
     }
 }

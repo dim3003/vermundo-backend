@@ -8,4 +8,8 @@ public interface IEmailSender
         string htmlBody,
         string? textBody = null,
         CancellationToken ct = default);
+
+    Task SendAsync(
+        NewsletterEmailMessage message,
+        CancellationToken ct = default);
 }

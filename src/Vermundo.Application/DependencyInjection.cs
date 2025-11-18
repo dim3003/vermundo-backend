@@ -1,6 +1,8 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Vermundo.Application.Abstractions;
 using Vermundo.Application.Abstractions.Behaviors;
+using Vermundo.Application.Newsletter;
 
 namespace Vermundo.Application;
 
@@ -16,6 +18,7 @@ public static class DependencyInjection
         });
 
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
+        services.AddScoped<INewsletterSubscriptionService, NewsletterSubscriptionService>();
 
         return services;
     }

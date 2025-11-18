@@ -23,7 +23,7 @@ public class SubscribeNewsletterTests : BaseFunctionalTests
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Single(_spy.Calls);
-        Assert.Equal(email, _spy.Calls[0].Email);
+        Assert.Equal(email.ToLowerInvariant(), _spy.Calls[0].Email);
     }
 
     [Fact]

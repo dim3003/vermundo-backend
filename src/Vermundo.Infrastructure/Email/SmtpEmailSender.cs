@@ -1,6 +1,7 @@
-using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Options;
+using MimeKit;
 using Vermundo.Application.Email;
 
 namespace Vermundo.Infrastructure.Email;
@@ -21,36 +22,69 @@ public class SmtpEmailSender : IEmailSender
         string? textBody = null,
         CancellationToken ct = default)
     {
-        using var message = new MailMessage();
+        Console.WriteLine("=== SMTP OPTIONS ===");
+        Console.WriteLine($"Host:        {_options.Host}");
+        Console.WriteLine($"Port:        {_options.Port}");
+        Console.WriteLine($"UseSsl:      {_options.UseSsl}");
+        Console.WriteLine($"UseStartTls: {_options.UseStartTls}");
+        Console.WriteLine($"FromAddress: {_options.FromAddress}");
+        Console.WriteLine($"FromName:    {_options.FromName}");
+        Console.WriteLine($"UserName:    {_options.UserName}");
 
-        message.From = new MailAddress(_options.FromAddress, _options.FromName);
-        message.To.Add(new MailAddress(to));
+        var masked = string.IsNullOrWhiteSpace(_options.Password)
+            ? "<empty>"
+            : new string('*', _options.Password.Length);
+        Console.WriteLine($"Password:    {masked}");
+        Console.WriteLine("=====================");
+
+        // Build the email message using MimeKit
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(_options.FromName, _options.FromAddress));
+        message.To.Add(new MailboxAddress(to, to));
         message.Subject = subject;
-        message.Body = htmlBody;
-        message.IsBodyHtml = true;
 
-        if (!string.IsNullOrEmpty(textBody))
+        var bodyBuilder = new BodyBuilder
         {
-            message.AlternateViews.Add(
-                AlternateView.CreateAlternateViewFromString(textBody, null, "text/plain"));
-            message.AlternateViews.Add(
-                AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html"));
-        }
-
-        using var client = new SmtpClient(_options.Host, _options.Port)
-        {
-            Credentials = new NetworkCredential(_options.UserName, _options.Password),
-            EnableSsl = _options.UseSsl
+            HtmlBody = htmlBody,
+            TextBody = textBody ?? string.Empty
         };
 
-        if (_options.UseStartTls)
-        {
-            // With System.Net.Mail there's no explicit StartTLS toggle,
-            // it's negotiated automatically on Port 587 when EnableSsl = true.
-            client.EnableSsl = true;
-        }
+        message.Body = bodyBuilder.ToMessageBody();
 
-        // System.Net.Mail has no true async; this avoids blocking your API thread pool:
-        await Task.Run(() => client.Send(message), ct);
+        using var client = new SmtpClient();
+
+        // Choose TLS mode based on your config
+        SecureSocketOptions socketOptions =
+            _options.Port switch
+            {
+                465 => SecureSocketOptions.SslOnConnect,       // implicit TLS
+                587 => SecureSocketOptions.StartTls,           // STARTTLS
+                _ => _options.UseSsl ? SecureSocketOptions.SslOnConnect
+                                     : SecureSocketOptions.StartTls
+            };
+
+        // Connect
+        await client.ConnectAsync(_options.Host, _options.Port, socketOptions, ct);
+
+        // Authenticate
+        await client.AuthenticateAsync(_options.UserName, _options.Password, ct);
+
+        // Send the email
+        await client.SendAsync(message, ct);
+
+        // Disconnect
+        await client.DisconnectAsync(true, ct);
+    }
+
+    public async Task SendAsync(
+        NewsletterEmailMessage emailMessage,
+        CancellationToken ct = default)
+    {
+        await SendAsync(
+            emailMessage.To,
+            emailMessage.Subject,
+            emailMessage.HtmlBody,
+            emailMessage.TextBody,
+            ct);
     }
 }

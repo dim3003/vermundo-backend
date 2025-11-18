@@ -11,6 +11,7 @@ public class NewsletterSubscriber : Entity
     public string ConfirmationToken { get; private set; } = default!;
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset? ConfirmedAt { get; private set; }
+    public bool IsConfirmed => Status == SubscriberStatus.Confirmed;
 
     public static NewsletterSubscriber CreateUnconfirmed(
         string email,
@@ -48,5 +49,17 @@ public class NewsletterSubscriber : Entity
 
         Status = SubscriberStatus.Confirmed;
         ConfirmedAt = nowUtc;
+    }
+
+    public void SetConfirmationToken(string token, DateTimeOffset nowUtc)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            throw new ArgumentException("Token cannot be empty.", nameof(token));
+        }
+
+        ConfirmationToken = token;
+        Status = SubscriberStatus.Unconfirmed;
+        ConfirmedAt = null;
     }
 }
