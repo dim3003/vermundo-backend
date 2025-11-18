@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Vermundo.Api.FunctionalTests.Newsletter;
+using Vermundo.Api.TestUtils;
 using Vermundo.Infrastructure;
 
 namespace Vermundo.Api.FunctionalTests.Infrastructure;

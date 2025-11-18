@@ -1,4 +1,5 @@
 public interface INewsletterClient
 {
-    Task SubscribeAsync(string email, CancellationToken cancellationToken = default);
+    Task<int> SubscribeAsync(string email, CancellationToken cancellationToken = default);
+    Task ConfirmAsync(int providerId, CancellationToken cancellationToken = default);
 }

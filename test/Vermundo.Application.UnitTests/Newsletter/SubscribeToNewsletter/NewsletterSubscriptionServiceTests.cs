@@ -85,7 +85,7 @@ public class NewsletterSubscriptionServiceTests
 
         _newsletterClientMock
             .Setup(c => c.SubscribeAsync(normalizedEmail, It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .ReturnsAsync(42);
 
         var emailMessage = new NewsletterEmailMessage(normalizedEmail, "subject", "<p>body</p>", "body");
         _emailContentFactoryMock
@@ -136,7 +136,7 @@ public class NewsletterSubscriptionServiceTests
 
         _newsletterClientMock
             .Setup(c => c.SubscribeAsync(normalizedEmail, It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .ReturnsAsync(42);
 
         var emailMessage = new NewsletterEmailMessage(normalizedEmail, "subject", "<p>body</p>", "body");
         _emailContentFactoryMock
@@ -160,6 +160,75 @@ public class NewsletterSubscriptionServiceTests
         _newsletterClientMock.Verify(c => c.SubscribeAsync(normalizedEmail, It.IsAny<CancellationToken>()), Times.Once);
         _emailContentFactoryMock.Verify(f => f.CreateConfirmationEmail(normalizedEmail, newToken), Times.Once);
         _emailSenderMock.Verify(s => s.SendAsync(emailMessage, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ConfirmAsync_WhenSubscriberExistsButUnconfirmed_SetsSubscriberConfirmed()
+    {
+        // Arrange
+        var email = _faker.Internet.Email();
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+        var token = _faker.Random.AlphaNumeric(16);
+        var existing = NewsletterSubscriber.CreateUnconfirmed(email, token, DateTimeOffset.UtcNow.AddDays(-1));
+        existing.SetInfomaniakId(42);
+
+        _subscriberRepositoryMock
+            .Setup(r => r.GetByTokenAsync(token, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existing);
+
+        _unitOfWorkMock
+            .Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
+
+        _newsletterClientMock
+            .Setup(c => c.ConfirmAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _service.ConfirmAsync(token, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.True(existing.IsConfirmed);
+
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _newsletterClientMock.Verify(c => c.ConfirmAsync(existing.InfomaniakId, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ConfirmAsync_WhenSubscriberDoesNotExist_ThrowsNotFound()
+    {
+        // Arrange
+        var token = "abc";
+        _subscriberRepositoryMock
+            .Setup(r => r.GetByTokenAsync(token, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((NewsletterSubscriber?)null);
+
+        // Act 
+        var result = await _service.ConfirmAsync(token);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal(NewsletterSubscriberErrors.NewsletterSubscriberNotFound, result.Error);
+    }
+
+    [Fact]
+    public async Task ConfirmAsync_WhenTokenDoesNotMatch_ThrowsInvalidToken()
+    {
+        // Arrange
+        var subscriber = NewsletterSubscriber.CreateUnconfirmed("a@b.com", "REAL_TOKEN", DateTimeOffset.UtcNow);
+        subscriber.SetInfomaniakId(42);
+
+        _subscriberRepositoryMock
+            .Setup(r => r.GetByTokenAsync("WRONG", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(subscriber);
+
+        // Act
+        var result = await _service.ConfirmAsync("WRONG");
+        
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal(NewsletterSubscriberErrors.InvalidConfirmationToken, result.Error);
     }
 }
 

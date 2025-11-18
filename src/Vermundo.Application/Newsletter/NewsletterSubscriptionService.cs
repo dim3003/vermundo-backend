@@ -18,13 +18,32 @@ public class NewsletterSubscriptionService : INewsletterSubscriptionService
         IConfirmationTokenGenerator tokenGenerator,
         INewsletterEmailContentFactory emailContentFactory,
         IEmailSender emailSender,
-        INewsletterClient newsletterClient)
+        INewsletterClient newsletterClient
+    )
     {
         _unitOfWork = unitOfWork;
         _tokenGenerator = tokenGenerator;
         _emailContentFactory = emailContentFactory;
         _emailSender = emailSender;
         _newsletterClient = newsletterClient;
+    }
+
+    public async Task<Result> ConfirmAsync(
+        string token,
+        CancellationToken ct = default
+    )
+    {
+        var subscriber = await _unitOfWork.Subscriber.GetByTokenAsync(token);
+        if (subscriber is null)
+            return Result.Failure(NewsletterSubscriberErrors.NewsletterSubscriberNotFound);
+
+        var confirmResult = subscriber.Confirm(token, DateTimeOffset.UtcNow);
+        if (confirmResult.IsFailure)
+            return confirmResult;
+
+        await _newsletterClient.ConfirmAsync(subscriber.InfomaniakId, ct);
+        await _unitOfWork.SaveChangesAsync();
+        return Result.Success();
     }
 
     public async Task<Result> SubscribeAsync(string rawEmail, CancellationToken ct = default)
@@ -63,4 +82,3 @@ public class NewsletterSubscriptionService : INewsletterSubscriptionService
         return Result.Success();
     }
 }
-

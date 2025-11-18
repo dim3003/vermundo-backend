@@ -6,7 +6,8 @@ public class NewsletterSubscriber : Entity
 {
     private NewsletterSubscriber() { }
 
-    public string Email { get; set; } = default!;
+    public string Email { get; private set; } = default!;
+    public int InfomaniakId { get; private set; }
     public SubscriberStatus Status { get; private set; }
     public string ConfirmationToken { get; private set; } = default!;
     public DateTimeOffset CreatedAt { get; private set; }
@@ -35,20 +36,22 @@ public class NewsletterSubscriber : Entity
         };
     }
 
-    public void Confirm(string token, DateTimeOffset nowUtc)
+    public Result Confirm(string token, DateTimeOffset nowUtc)
     {
         if (token != ConfirmationToken)
         {
-            throw new InvalidOperationException("Invalid confirmation token.");
+            return Result.Failure(NewsletterSubscriberErrors.InvalidConfirmationToken);
         }
-
+        
         if (Status == SubscriberStatus.Confirmed)
         {
-            return;
+            return Result.Success();
         }
-
+        
         Status = SubscriberStatus.Confirmed;
         ConfirmedAt = nowUtc;
+        
+        return Result.Success();
     }
 
     public void SetConfirmationToken(string token, DateTimeOffset nowUtc)
@@ -61,5 +64,13 @@ public class NewsletterSubscriber : Entity
         ConfirmationToken = token;
         Status = SubscriberStatus.Unconfirmed;
         ConfirmedAt = null;
+    }
+
+    internal void SetInfomaniakId(int id)
+    {
+        if (id <= 0)
+            throw new ArgumentOutOfRangeException(nameof(id));
+
+        InfomaniakId = id;
     }
 }

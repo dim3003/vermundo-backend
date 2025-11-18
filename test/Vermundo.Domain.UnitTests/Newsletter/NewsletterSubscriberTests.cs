@@ -32,19 +32,17 @@ public class NewsletterSubscriberTests
         var token = "test-token";
         var createdAt = new DateTimeOffset(2025, 1, 1, 12, 0, 0, TimeSpan.Zero);
         var confirmedAt = createdAt.AddMinutes(5);
-
         var subscriber = NewsletterSubscriber.CreateUnconfirmed(email, token, createdAt);
-
         // Act
-        subscriber.Confirm(token, confirmedAt);
-
+        var result = subscriber.Confirm(token, confirmedAt);
         // Assert
+        Assert.True(result.IsSuccess);
         Assert.Equal(SubscriberStatus.Confirmed, subscriber.Status);
         Assert.Equal(confirmedAt, subscriber.ConfirmedAt);
     }
-
+    
     [Fact]
-    public void Confirm_ShouldThrow_WhenTokenDoesNotMatch()
+    public void Confirm_ShouldReturnFailure_WhenTokenDoesNotMatch()
     {
         // Arrange
         var email = "user@example.com";
@@ -53,17 +51,15 @@ public class NewsletterSubscriberTests
             email,
             token,
             DateTimeOffset.UtcNow);
-
         // Act
-        var act = () => subscriber.Confirm("wrong-token", DateTimeOffset.UtcNow);
-
+        var result = subscriber.Confirm("wrong-token", DateTimeOffset.UtcNow);
         // Assert
-        var ex = Assert.Throws<InvalidOperationException>(act);
-        Assert.Contains("Invalid confirmation token", ex.Message);
+        Assert.True(result.IsFailure);
+        Assert.Equal(NewsletterSubscriberErrors.InvalidConfirmationToken, result.Error);
         Assert.Equal(SubscriberStatus.Unconfirmed, subscriber.Status);
         Assert.Null(subscriber.ConfirmedAt);
     }
-
+    
     [Fact]
     public void Confirm_ShouldBeIdempotent_WhenAlreadyConfirmed_WithSameToken()
     {
@@ -73,21 +69,19 @@ public class NewsletterSubscriberTests
         var createdAt = new DateTimeOffset(2025, 1, 1, 12, 0, 0, TimeSpan.Zero);
         var firstConfirmation = createdAt.AddMinutes(5);
         var secondConfirmation = createdAt.AddMinutes(10);
-
         var subscriber = NewsletterSubscriber.CreateUnconfirmed(email, token, createdAt);
         subscriber.Confirm(token, firstConfirmation);
-
         // Act
-        subscriber.Confirm(token, secondConfirmation);
-
+        var result = subscriber.Confirm(token, secondConfirmation);
         // Assert
+        Assert.True(result.IsSuccess);
         Assert.Equal(SubscriberStatus.Confirmed, subscriber.Status);
         // We keep the first confirmation timestamp
         Assert.Equal(firstConfirmation, subscriber.ConfirmedAt);
     }
-
+    
     [Fact]
-    public void Confirm_ShouldThrow_WhenAlreadyConfirmed_WithDifferentToken()
+    public void Confirm_ShouldReturnFailure_WhenAlreadyConfirmed_WithDifferentToken()
     {
         // Arrange
         var email = "user@example.com";
@@ -95,13 +89,12 @@ public class NewsletterSubscriberTests
         var createdAt = new DateTimeOffset(2025, 1, 1, 12, 0, 0, TimeSpan.Zero);
         var subscriber = NewsletterSubscriber.CreateUnconfirmed(email, token, createdAt);
         subscriber.Confirm(token, createdAt.AddMinutes(1));
-
         // Act
-        var act = () => subscriber.Confirm("other-token", createdAt.AddMinutes(2));
-
+        var result = subscriber.Confirm("other-token", createdAt.AddMinutes(2));
         // Assert
-        var ex = Assert.Throws<InvalidOperationException>(act);
-        Assert.Contains("Invalid confirmation token", ex.Message);
+        Assert.True(result.IsFailure);
+        Assert.Equal(NewsletterSubscriberErrors.InvalidConfirmationToken, result.Error);
         Assert.Equal(SubscriberStatus.Confirmed, subscriber.Status);
     }
 }
+
