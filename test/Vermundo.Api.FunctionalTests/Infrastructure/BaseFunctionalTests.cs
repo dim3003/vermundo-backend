@@ -7,7 +7,7 @@ namespace Vermundo.Api.FunctionalTests.Infrastructure;
 public abstract class BaseFunctionalTests : IClassFixture<FunctionalTestsWebAppFactory>, IAsyncLifetime
 {
     private readonly IServiceScope _scope;
-    private readonly ApplicationDbContext DbContext;
+    protected readonly ApplicationDbContext DbContext;
     protected readonly HttpClient HttpClient;
     protected readonly SpyNewsletterClient _spy;
 
@@ -23,8 +23,7 @@ public abstract class BaseFunctionalTests : IClassFixture<FunctionalTestsWebAppF
     {
         DbContext.Articles.RemoveRange(DbContext.Articles);
         await DbContext.SaveChangesAsync();
-        _spy.Calls.Clear();
-        _spy.FailWith = null;
+        _spy.Reset();
     }
 
     public virtual Task DisposeAsync()

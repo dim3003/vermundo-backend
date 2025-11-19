@@ -72,9 +72,10 @@ public class NewsletterSubscriptionService : INewsletterSubscriptionService
             subscriber = existing;
         }
 
-        await _unitOfWork.SaveChangesAsync(ct);
+        var providerId = await _newsletterClient.SubscribeAsync(email, ct);
+        subscriber.SetInfomaniakId(providerId);
 
-        await _newsletterClient.SubscribeAsync(email, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         var emailMessage = _emailContentFactory.CreateConfirmationEmail(email, token);
         await _emailSender.SendAsync(emailMessage, ct);

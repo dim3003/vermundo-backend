@@ -66,7 +66,7 @@ public class NewsletterSubscriber : Entity
         ConfirmedAt = null;
     }
 
-    internal void SetInfomaniakId(int id)
+    public void SetInfomaniakId(int id)
     {
         if (id <= 0)
             throw new ArgumentOutOfRangeException(nameof(id));

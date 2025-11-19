@@ -25,5 +25,13 @@ public sealed class SpyNewsletterClient : INewsletterClient
         LastConfirmedProviderId = providerId;
         return Task.CompletedTask;
     }
+
+    public void Reset()
+    {
+        Calls.Clear();
+        FailWith = null;
+        ConfirmCallCount = 0;
+        LastConfirmedProviderId = null;
+    }
 }
 
