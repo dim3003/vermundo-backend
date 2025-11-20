@@ -22,21 +22,6 @@ public class SmtpEmailSender : IEmailSender
         string? textBody = null,
         CancellationToken ct = default)
     {
-        Console.WriteLine("=== SMTP OPTIONS ===");
-        Console.WriteLine($"Host:        {_options.Host}");
-        Console.WriteLine($"Port:        {_options.Port}");
-        Console.WriteLine($"UseSsl:      {_options.UseSsl}");
-        Console.WriteLine($"UseStartTls: {_options.UseStartTls}");
-        Console.WriteLine($"FromAddress: {_options.FromAddress}");
-        Console.WriteLine($"FromName:    {_options.FromName}");
-        Console.WriteLine($"UserName:    {_options.UserName}");
-
-        var masked = string.IsNullOrWhiteSpace(_options.Password)
-            ? "<empty>"
-            : new string('*', _options.Password.Length);
-        Console.WriteLine($"Password:    {masked}");
-        Console.WriteLine("=====================");
-
         // Build the email message using MimeKit
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(_options.FromName, _options.FromAddress));

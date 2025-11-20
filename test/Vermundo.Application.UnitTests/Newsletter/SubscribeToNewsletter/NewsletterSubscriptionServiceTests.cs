@@ -15,7 +15,6 @@ public class NewsletterSubscriptionServiceTests
     private readonly Mock<IConfirmationTokenGenerator> _tokenGeneratorMock = new(MockBehavior.Strict);
     private readonly Mock<INewsletterEmailContentFactory> _emailContentFactoryMock = new(MockBehavior.Strict);
     private readonly Mock<IEmailSender> _emailSenderMock = new(MockBehavior.Strict);
-    private readonly Mock<INewsletterClient> _newsletterClientMock = new(MockBehavior.Strict);
     private readonly NewsletterSubscriptionService _service;
     private readonly Faker _faker = new();
 
@@ -27,8 +26,7 @@ public class NewsletterSubscriptionServiceTests
             _unitOfWorkMock.Object,
             _tokenGeneratorMock.Object,
             _emailContentFactoryMock.Object,
-            _emailSenderMock.Object,
-            _newsletterClientMock.Object);
+            _emailSenderMock.Object);
     }
 
     [Fact]
@@ -52,7 +50,6 @@ public class NewsletterSubscriptionServiceTests
         _tokenGeneratorMock.Verify(g => g.Generate(), Times.Never);
         _subscriberRepositoryMock.Verify(r => r.AddAsync(It.IsAny<NewsletterSubscriber>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        _newsletterClientMock.Verify(c => c.SubscribeAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         _emailContentFactoryMock.Verify(f => f.CreateConfirmationEmail(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         _emailSenderMock.Verify(s => s.SendAsync(It.IsAny<NewsletterEmailMessage>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -83,10 +80,6 @@ public class NewsletterSubscriptionServiceTests
             .Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
 
-        _newsletterClientMock
-            .Setup(c => c.SubscribeAsync(normalizedEmail, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(42);
-
         var emailMessage = new NewsletterEmailMessage(normalizedEmail, "subject", "<p>body</p>", "body");
         _emailContentFactoryMock
             .Setup(f => f.CreateConfirmationEmail(normalizedEmail, generatedToken))
@@ -108,7 +101,6 @@ public class NewsletterSubscriptionServiceTests
 
         _subscriberRepositoryMock.Verify(r => r.AddAsync(It.IsAny<NewsletterSubscriber>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        _newsletterClientMock.Verify(c => c.SubscribeAsync(normalizedEmail, It.IsAny<CancellationToken>()), Times.Once);
         _emailContentFactoryMock.Verify(f => f.CreateConfirmationEmail(normalizedEmail, generatedToken), Times.Once);
         _emailSenderMock.Verify(s => s.SendAsync(emailMessage, It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -134,10 +126,6 @@ public class NewsletterSubscriptionServiceTests
             .Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
 
-        _newsletterClientMock
-            .Setup(c => c.SubscribeAsync(normalizedEmail, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(42);
-
         var emailMessage = new NewsletterEmailMessage(normalizedEmail, "subject", "<p>body</p>", "body");
         _emailContentFactoryMock
             .Setup(f => f.CreateConfirmationEmail(normalizedEmail, newToken))
@@ -157,7 +145,6 @@ public class NewsletterSubscriptionServiceTests
 
         _subscriberRepositoryMock.Verify(r => r.AddAsync(It.IsAny<NewsletterSubscriber>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        _newsletterClientMock.Verify(c => c.SubscribeAsync(normalizedEmail, It.IsAny<CancellationToken>()), Times.Once);
         _emailContentFactoryMock.Verify(f => f.CreateConfirmationEmail(normalizedEmail, newToken), Times.Once);
         _emailSenderMock.Verify(s => s.SendAsync(emailMessage, It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -170,7 +157,6 @@ public class NewsletterSubscriptionServiceTests
         var normalizedEmail = email.Trim().ToLowerInvariant();
         var token = _faker.Random.AlphaNumeric(16);
         var existing = NewsletterSubscriber.CreateUnconfirmed(email, token, DateTimeOffset.UtcNow.AddDays(-1));
-        existing.SetInfomaniakId(42);
 
         _subscriberRepositoryMock
             .Setup(r => r.GetByTokenAsync(token, It.IsAny<CancellationToken>()))
@@ -180,10 +166,6 @@ public class NewsletterSubscriptionServiceTests
             .Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(1);
 
-        _newsletterClientMock
-            .Setup(c => c.ConfirmAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
         // Act
         var result = await _service.ConfirmAsync(token, CancellationToken.None);
 
@@ -192,7 +174,6 @@ public class NewsletterSubscriptionServiceTests
         Assert.True(existing.IsConfirmed);
 
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        _newsletterClientMock.Verify(c => c.ConfirmAsync(existing.InfomaniakId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -217,7 +198,6 @@ public class NewsletterSubscriptionServiceTests
     {
         // Arrange
         var subscriber = NewsletterSubscriber.CreateUnconfirmed("a@b.com", "REAL_TOKEN", DateTimeOffset.UtcNow);
-        subscriber.SetInfomaniakId(42);
 
         _subscriberRepositoryMock
             .Setup(r => r.GetByTokenAsync("WRONG", It.IsAny<CancellationToken>()))

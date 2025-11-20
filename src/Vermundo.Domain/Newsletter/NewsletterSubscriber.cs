@@ -7,7 +7,6 @@ public class NewsletterSubscriber : Entity
     private NewsletterSubscriber() { }
 
     public string Email { get; private set; } = default!;
-    public int InfomaniakId { get; private set; }
     public SubscriberStatus Status { get; private set; }
     public string ConfirmationToken { get; private set; } = default!;
     public DateTimeOffset CreatedAt { get; private set; }
@@ -64,13 +63,5 @@ public class NewsletterSubscriber : Entity
         ConfirmationToken = token;
         Status = SubscriberStatus.Unconfirmed;
         ConfirmedAt = null;
-    }
-
-    public void SetInfomaniakId(int id)
-    {
-        if (id <= 0)
-            throw new ArgumentOutOfRangeException(nameof(id));
-
-        InfomaniakId = id;
     }
 }

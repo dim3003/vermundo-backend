@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
-using Vermundo.Api.TestUtils;
 using Vermundo.Application.Abstractions.Data;
 using Vermundo.Application.Email;
 using Vermundo.Infrastructure;
@@ -43,16 +42,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
                 _dbContainer.GetConnectionString()
             ));
 
-            ReplaceNewsletterClient(services);
             ReplaceEmailSender(services);
         });
-    }
-
-    private static void ReplaceNewsletterClient(IServiceCollection services)
-    {
-        services.RemoveAll<INewsletterClient>();
-        services.AddSingleton<SpyNewsletterClient>();
-        services.AddSingleton<INewsletterClient>(sp => sp.GetRequiredService<SpyNewsletterClient>());
     }
 
     private static void ReplaceEmailSender(IServiceCollection services)

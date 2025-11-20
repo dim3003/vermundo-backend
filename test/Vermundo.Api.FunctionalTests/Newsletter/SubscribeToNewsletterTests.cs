@@ -22,8 +22,6 @@ public class SubscribeNewsletterTests : BaseFunctionalTests
         var response = await HttpClient.PostAsJsonAsync("api/newsletter/subscribe", request);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-        Assert.Single(_spy.Calls);
-        Assert.Equal(email.ToLowerInvariant(), _spy.Calls[0].Email);
     }
 
     [Fact]
@@ -34,22 +32,5 @@ public class SubscribeNewsletterTests : BaseFunctionalTests
         var response = await HttpClient.PostAsJsonAsync("api/newsletter/subscribe", request);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Empty(_spy.Calls);
-    }
-
-    [Fact]
-    public async Task Subscribe_ShouldPropagateDomainErrors_AsProblemDetails()
-    {
-        _spy.FailWith = new HttpRequestException(
-            "Infomaniak rate limit hit.",
-            inner: null,
-            statusCode: HttpStatusCode.TooManyRequests
-        );
-
-        var request = new SubscribeToNewsletterRequest(_faker.Internet.Email());
-
-        var response = await HttpClient.PostAsJsonAsync("api/newsletter/subscribe", request);
-
-        Assert.Equal((HttpStatusCode)429, response.StatusCode);
     }
 }

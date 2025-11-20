@@ -45,7 +45,7 @@ public sealed class NewsletterEmailContentFactoryTests
         var message = _sut.CreateConfirmationEmail(email, token);
 
         // Assert
-        var expectedLink = "https://vermundo.test/newsletter/confirm?token=abc123";
+        var expectedLink = "https://vermundo.test/confirm-newsletter/abc123";
 
         // HTML body invariants
         Assert.Contains(expectedLink, message.HtmlBody);

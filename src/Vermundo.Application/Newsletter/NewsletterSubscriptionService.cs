@@ -11,21 +11,18 @@ public class NewsletterSubscriptionService : INewsletterSubscriptionService
     private readonly IConfirmationTokenGenerator _tokenGenerator;
     private readonly INewsletterEmailContentFactory _emailContentFactory;
     private readonly IEmailSender _emailSender;
-    private readonly INewsletterClient _newsletterClient;
 
     public NewsletterSubscriptionService(
         IUnitOfWork unitOfWork,
         IConfirmationTokenGenerator tokenGenerator,
         INewsletterEmailContentFactory emailContentFactory,
-        IEmailSender emailSender,
-        INewsletterClient newsletterClient
+        IEmailSender emailSender
     )
     {
         _unitOfWork = unitOfWork;
         _tokenGenerator = tokenGenerator;
         _emailContentFactory = emailContentFactory;
         _emailSender = emailSender;
-        _newsletterClient = newsletterClient;
     }
 
     public async Task<Result> ConfirmAsync(
@@ -41,7 +38,6 @@ public class NewsletterSubscriptionService : INewsletterSubscriptionService
         if (confirmResult.IsFailure)
             return confirmResult;
 
-        await _newsletterClient.ConfirmAsync(subscriber.InfomaniakId, ct);
         await _unitOfWork.SaveChangesAsync();
         return Result.Success();
     }
@@ -71,9 +67,6 @@ public class NewsletterSubscriptionService : INewsletterSubscriptionService
             existing.SetConfirmationToken(token, nowUtc);
             subscriber = existing;
         }
-
-        var providerId = await _newsletterClient.SubscribeAsync(email, ct);
-        subscriber.SetInfomaniakId(providerId);
 
         await _unitOfWork.SaveChangesAsync(ct);
 

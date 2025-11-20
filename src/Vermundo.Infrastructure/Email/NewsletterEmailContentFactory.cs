@@ -15,7 +15,7 @@ public sealed class NewsletterEmailContentFactory : INewsletterEmailContentFacto
 
     public NewsletterEmailMessage CreateConfirmationEmail(string email, string confirmationToken)
     {
-        var confirmationLink = $"{_appBaseUrl}/newsletter/confirm?token={confirmationToken}";
+        var confirmationLink = $"{_appBaseUrl}/confirm-newsletter/{confirmationToken}";
 
         var subject = "Confirmez votre inscription à la newsletter Vermundo";
 
